@@ -26,6 +26,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
 using UnityEngine.VR;
+using System.Linq;
 
 namespace cakeslice
 {
@@ -285,6 +286,47 @@ namespace cakeslice
 						{
 							commandBuffer.DrawRenderer(outline.Renderer, m, v, 0);
 						}
+					}
+				}
+			}
+
+			Material material = null;
+
+			var meshFilters = FindObjectsOfType<MeshFilter>().Where(mo => mo.GetComponent<Outline>() == null);
+
+			foreach(MeshFilter mf in meshFilters)
+            {
+				var renderer = mf.GetComponent<Renderer>();
+
+				material = new Material(outlineEraseMaterial);
+				var _SharedMaterials = renderer.sharedMaterials;
+
+				for (int v = 0; v < _SharedMaterials.Length; v++)
+                {
+					if (mf.sharedMesh != null)
+					{
+						if (v < mf.sharedMesh.subMeshCount)
+							commandBuffer.DrawRenderer(renderer, material, v, 0);
+					}
+				}
+			}
+
+			var meshRenderers = FindObjectsOfType<SkinnedMeshRenderer>().Where(mo => mo.GetComponent<Outline>() == null);
+
+
+			foreach (SkinnedMeshRenderer mr in meshRenderers)
+			{
+				var renderer = mr.GetComponent<Renderer>();
+
+				material = new Material(outlineEraseMaterial);
+				var _SharedMaterials = renderer.sharedMaterials;
+
+				for (int v = 0; v < _SharedMaterials.Length; v++)
+				{
+					if (mr.sharedMesh != null)
+					{
+						if (v < mr.sharedMesh.subMeshCount)
+							commandBuffer.DrawRenderer(renderer, material, v, 0);
 					}
 				}
 			}
