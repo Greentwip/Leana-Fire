@@ -282,6 +282,8 @@ public class TileMovement : MonoBehaviour
 
     private void ClearCellsColor()
     {
+        var cellGrid = FindObjectOfType<CellGrid>();
+
         foreach (var cell in cellGrid.cells)
         {
             cell.GetComponent<Outline>().color = 1;
