@@ -29,6 +29,7 @@ public class TileMovement : MonoBehaviour
     public List<Cell> path = new List<Cell>();
 
     public bool findDistance = false;
+    private bool traceCellsRange = false;
 
     // Start is called before the first frame update
     void Start()
@@ -229,6 +230,12 @@ public class TileMovement : MonoBehaviour
 
     }
 
+    private void OnMouseDown()
+    {
+        traceCellsRange = !traceCellsRange;
+    }
+
+
     Cell FindClosest(Transform targetLocation, List<Cell> list)
     {
         var cellGrid = FindObjectOfType<CellGrid>();
@@ -273,6 +280,14 @@ public class TileMovement : MonoBehaviour
         }
     }
 
+    private void ClearCellsColor()
+    {
+        foreach (var cell in cellGrid.cells)
+        {
+            cell.GetComponent<Outline>().color = 1;
+        }
+    }
+
     private void HighlightPath()
     {
         foreach(var cell in path)
@@ -309,12 +324,6 @@ public class TileMovement : MonoBehaviour
             };
 
             new FloodSpiller().SpillFlood(floodParameters, markMatrix);
-
-            foreach (var cell in cellGrid.cells)
-            {
-                cell.GetComponent<Outline>().color = 1;
-            }
-
 
             for (int x = 0; x < cellGrid.width; x++)
             {
@@ -356,7 +365,12 @@ public class TileMovement : MonoBehaviour
     void Update()
     {
         Move();
-        HighlightCells();
+        ClearCellsColor();
+        if (traceCellsRange)
+        {
+            HighlightCells();
+        }
+        
         HighlightPath();
 
         if (findDistance)
