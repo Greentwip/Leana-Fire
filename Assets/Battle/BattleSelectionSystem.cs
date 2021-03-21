@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using cakeslice;
 using FloodSpill;
 using System.Linq;
 
@@ -45,7 +44,8 @@ public class BattleSelectionSystem : MonoBehaviour
 
         foreach (var cell in cellGrid.cells)
         {
-            cell.GetComponent<Outline>().color = 1;
+            cell.Material.SetColor("_Color", Color.white);
+            cell.Material.SetFloat("_Alpha", 0);
         }
     }
 
@@ -53,7 +53,8 @@ public class BattleSelectionSystem : MonoBehaviour
     {
         foreach (var cell in path)
         {
-            cell.GetComponent<Outline>().color = 0;
+            cell.Material.SetColor("_Color", Color.red);
+            cell.Material.SetFloat("_Alpha", 0.125f);
         }
     }
     private int[,] HighlightCells()
@@ -94,7 +95,10 @@ public class BattleSelectionSystem : MonoBehaviour
                     {
                         if (cell.x == x && cell.z == z)
                         {
-                            cell.GetComponent<Outline>().color = 2;
+                            cell.Material.SetColor("_Color", new Color(0, 0, 1, 0.1f));
+                            cell.Material.SetFloat("_Alpha", 0.125f);
+
+
                         }
                     }
                 }
@@ -408,8 +412,12 @@ public class BattleSelectionSystem : MonoBehaviour
             if (spilledCell <= selectedUnit.maxMovements)
             {
                 print("Move towards");
-                path.RemoveAt(path.Count - 1);
-                selectedUnit.PushPath(new List<Cell>(path));
+                if(path.Count != 0)
+                {
+                    path.RemoveAt(path.Count - 1);
+                    selectedUnit.PushPath(new List<Cell>(path));
+                }
+                
             }
             else
             {

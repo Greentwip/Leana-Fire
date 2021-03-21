@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using cakeslice;
 using System.Collections.Generic;
 
 [ExecuteInEditMode]
@@ -48,9 +47,13 @@ public class CellGrid : MonoBehaviour
 	void CreateCell(int x, int z, int i)
 	{
 		Vector3 position;
-		position.x = x * 10f + (0.1f * (width - (width - x)));
+		position.x = x * 10f + (0.4f * (width - (width - x)));
 		position.y = 0f;
-		position.z = z * 10f + (0.1f * (height - (height - z)));
+		position.z = z * 10f + (0.4f * (height - (height - z)));
+
+		/*position.x = x * 10f;
+		position.y = 0f;
+		position.z = z * 10f;*/
 
 		Cell cell = cells[i] = Instantiate<Cell>(cellPrefab);
 
@@ -58,7 +61,7 @@ public class CellGrid : MonoBehaviour
 		cell.z = z;
 
 		cell.name = "Cell_" + i.ToString();
-		cell.GetComponent<Outline>().color = 1;
+		//cell.GetComponent<Outline>().color = 3;
 		cell.transform.SetParent(transform, false);
 		cell.transform.localPosition = position;
 	}
