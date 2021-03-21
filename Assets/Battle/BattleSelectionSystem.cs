@@ -414,7 +414,23 @@ public class BattleSelectionSystem : MonoBehaviour
                 print("Move towards");
                 if(path.Count != 0)
                 {
-                    path.RemoveAt(path.Count - 1);
+                    //path.RemoveAt(path.Count - 1);
+
+                    Cell faultyCell = null;
+
+                    foreach(var searchCell in path)
+                    {
+                        if(searchCell.x == startX && searchCell.z == startZ)
+                        {
+                            faultyCell = searchCell;
+                        }
+                    }
+
+                    if(faultyCell != null)
+                    {
+                        path.Remove(faultyCell);
+                    }
+
                     selectedUnit.PushPath(new List<Cell>(path));
                 }
                 

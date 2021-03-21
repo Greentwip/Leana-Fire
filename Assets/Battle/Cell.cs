@@ -21,13 +21,20 @@ public class Cell : MonoBehaviour
     {
         battleSelectionSystem = FindObjectOfType<BattleSelectionSystem>();
         var cubeRenderer = GetComponent<Renderer>();
+        var outlineRenderer = outline.GetComponent<Renderer>();
 
         //Outline = GetComponent<Outline>();
         Material = cubeRenderer.material;
         Material.SetFloat("_Alpha", 0);
 
-        OutlineMaterial = outline.GetComponent<Renderer>().material;
+        OutlineMaterial = outlineRenderer.material;
         OutlineMaterial.SetFloat("_Alpha", 0);
+
+        cubeRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        cubeRenderer.receiveShadows = false;
+
+        outlineRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        outlineRenderer.receiveShadows = false;
 
     }
 

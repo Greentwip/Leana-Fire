@@ -101,8 +101,8 @@ public class CellGrid : MonoBehaviour
 	public Vector3 GetArrayValueFromTransform(Transform transform)
     {
 		var position = new Vector3(0, 0, 0);
-		int x = (int)Mathf.Round(transform.position.x / gridDistance);
-		int z = (int)Mathf.Round(transform.position.z / gridDistance);
+		int x = (int)Mathf.Floor(transform.position.x / gridDistance);
+		int z = (int)Mathf.Floor(transform.position.z / gridDistance);
 		if (CellExists(x, z))
         {
 			var cell = CellAt(x, z);
