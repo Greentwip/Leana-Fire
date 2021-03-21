@@ -34,6 +34,8 @@ public class CellGrid : MonoBehaviour
     public int width = 6;
 	public int height = 6;
 
+	public int gridDistance = 10;
+
 	public Cell cellPrefab;
 
 	public Cell[] cells;
@@ -68,7 +70,7 @@ public class CellGrid : MonoBehaviour
 
 		foreach (var cell in cells)
 		{
-			if (cell.gameObject.transform.position.x == x && cell.gameObject.transform.position.z == z)
+			if (cell.x == x && cell.z == z)
 			{
 				result = cell;
 				break;
@@ -83,7 +85,7 @@ public class CellGrid : MonoBehaviour
 
 		foreach (var cell in cells)
 		{
-			if (cell.gameObject.transform.position.x == x && cell.gameObject.transform.position.z == z)
+			if (cell.x == x && cell.z == z)
 			{
 				exists = true;
 				break;
@@ -96,9 +98,11 @@ public class CellGrid : MonoBehaviour
 	public Vector3 GetArrayValueFromTransform(Transform transform)
     {
 		var position = new Vector3(0, 0, 0);
-		if(CellExists((int)transform.position.x, (int)transform.position.z))
+		int x = (int)Mathf.Round(transform.position.x / gridDistance);
+		int z = (int)Mathf.Round(transform.position.z / gridDistance);
+		if (CellExists(x, z))
         {
-			var cell = CellAt((int)transform.position.x, (int)transform.position.z);
+			var cell = CellAt(x, z);
 			position.x = cell.x;
 			position.y = 0;
 			position.z = cell.z;

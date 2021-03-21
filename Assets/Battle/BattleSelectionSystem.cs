@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using cakeslice;
 using FloodSpill;
+using System.Linq;
 
 public class BattleSelectionSystem : MonoBehaviour
 {
@@ -17,7 +18,6 @@ public class BattleSelectionSystem : MonoBehaviour
 
     public List<Cell> path = new List<Cell>();
 
-    public bool findDistance = false;
     private bool traceCellsRange = false;
 
     private CellGrid grid = null;
@@ -56,7 +56,7 @@ public class BattleSelectionSystem : MonoBehaviour
             cell.GetComponent<Outline>().color = 0;
         }
     }
-    private void HighlightCells()
+    private int[,] HighlightCells()
     {
         var cellGrid = FindObjectOfType<CellGrid>();
 
@@ -65,8 +65,8 @@ public class BattleSelectionSystem : MonoBehaviour
 
         foreach (var cell in cellGrid.cells)
         {
-            int cellX = (int)cell.gameObject.transform.position.x;
-            int cellZ = (int)cell.gameObject.transform.position.z;
+            int cellX = (int)cell.x;
+            int cellZ = (int)cell.z;
 
             if (cellX == (int)startX && 
                 cellZ == (int)startZ)
@@ -100,6 +100,8 @@ public class BattleSelectionSystem : MonoBehaviour
                 }
             }
         }
+
+        return markMatrix;
     }
 
 
@@ -335,12 +337,53 @@ public class BattleSelectionSystem : MonoBehaviour
 
     public void SetSelectedUnit(TileMovement unit)
     {
+
+        if(selectedUnit != null && selectedUnit != unit)
+        {
+            selectedUnit.GetComponent<BoxCollider>().enabled = true;
+        }
+
+        if(unit != null)
+        {
+            unit.GetComponent<BoxCollider>().enabled = false;
+        }
+
+        if(unit == null && selectedUnit != null)
+        {
+            selectedUnit.GetComponent<BoxCollider>().enabled = true;
+        }
+
         selectedUnit = unit;
 
-        var translatedPosition = grid.GetArrayValueFromTransform(selectedUnit.gameObject.transform);
+        if(selectedUnit == null)
+        {
+            startX = 0;
+            startZ = 0;
 
-        startX = (int)translatedPosition.x;
-        startZ = (int)translatedPosition.z;
+            endX = 0;
+            endZ = 0;
+
+        }
+        else
+        {
+            var translatedPosition = grid.GetArrayValueFromTransform(selectedUnit.gameObject.transform);
+
+            startX = (int)translatedPosition.x;
+            startZ = (int)translatedPosition.z;
+
+            endX = startX;
+            endZ = startZ;
+
+            SetDistance();
+            SetPath();
+
+        }
+
+    }
+
+    public TileMovement GetSelectedUnit()
+    {
+        return selectedUnit;
     }
 
     public void SetSelectedCell(Cell cell)
@@ -348,24 +391,76 @@ public class BattleSelectionSystem : MonoBehaviour
         selectedCell = cell;
         endX = selectedCell.x;
         endZ = selectedCell.z;
+
+        if (selectedUnit != null)
+        {
+            var translatedPosition = grid.GetArrayValueFromTransform(selectedUnit.gameObject.transform);
+
+            startX = (int)translatedPosition.x;
+            startZ = (int)translatedPosition.z;
+
+            SetDistance();
+            SetPath();
+
+
+            var markMatrix = HighlightCells();
+            int spilledCell = markMatrix[endX, endZ];
+            if (spilledCell <= selectedUnit.maxMovements)
+            {
+                print("Move towards");
+                path.RemoveAt(path.Count - 1);
+                selectedUnit.PushPath(new List<Cell>(path));
+            }
+            else
+            {
+                SetSelectedUnit(null);
+            }
+        }
+        else
+        {
+            endX = 0;
+            endZ = 0;
+        }
+
+
     }
 
     // Update is called once per frame
     void Update()
     {
         ClearCellsColor();
+
         if (selectedUnit != null)
         {
-            HighlightCells();
-        }
+            var markMatrix = HighlightCells();
 
-        HighlightPath();
+            bool foundPath = false;
 
-        if (findDistance)
-        {
-            SetDistance();
-            SetPath();
-            findDistance = false;
+            if(path.Count != 0)
+            {
+                for (int x = 0; x < grid.width; x++)
+                {
+                    for (int z = 0; z < grid.height; z++)
+                    {
+                        int spilledCell = markMatrix[x, z];
+
+                        if (spilledCell <= selectedUnit.maxMovements)
+                        {
+                            if (path.First().x == x && path.First().z == z)
+                            {
+                                foundPath = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            if (foundPath)
+            {
+                HighlightPath();
+            }
         }
     }
 }

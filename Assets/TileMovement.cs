@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 public class TileMovement : MonoBehaviour
 {
@@ -20,6 +21,8 @@ public class TileMovement : MonoBehaviour
 
     BattleSelectionSystem battleSelectionSystem;
 
+    List<Cell> path = new List<Cell>();
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,6 +42,11 @@ public class TileMovement : MonoBehaviour
     private void OnMouseDown()
     {
         battleSelectionSystem.SetSelectedUnit(this);
+    }
+
+    public void PushPath(List<Cell> path)
+    {
+        this.path = path;
     }
 
     // Update is called once per frame
@@ -83,6 +91,53 @@ public class TileMovement : MonoBehaviour
                 destination = transform.position + nextPosition;
             }
             
+            if(path.Count != 0)
+            {
+                var nextTarget = path.Last();
+                path.RemoveAt(path.Count - 1);
+
+                Vector3 dir = (nextTarget.transform.position - this.transform.position).normalized;
+
+                dir.x = Mathf.Round(dir.x);
+                dir.y = Mathf.Round(dir.y);
+                dir.z = Mathf.Round(dir.z);
+
+                if (dir.x > 0)
+                {
+                    nextPosition = Vector3.right * gridDistance;
+                    currentDirection = right;
+                }
+                else if(dir.x < 0)
+                {
+                    nextPosition = Vector3.left * gridDistance;
+                    currentDirection = left;
+
+                }
+
+                if (dir.z > 0)
+                {
+                    nextPosition = Vector3.forward * gridDistance;
+                    currentDirection = up;
+
+                }
+                else if(dir.z < 0)
+                {
+                    nextPosition = Vector3.back * gridDistance;
+                    currentDirection = down;
+
+                }
+
+                transform.localEulerAngles = currentDirection;
+                destination = transform.position + nextPosition;
+
+                if(path.Count == 0)
+                {
+                    if (battleSelectionSystem.GetSelectedUnit() == this)
+                    {
+                        battleSelectionSystem.SetSelectedUnit(null);
+                    }
+                }
+            }
         }
 
     }
