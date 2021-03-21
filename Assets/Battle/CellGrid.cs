@@ -61,4 +61,50 @@ public class CellGrid : MonoBehaviour
 		cell.transform.localPosition = position;
 	}
 
+
+	Cell CellAt(int x, int z)
+	{
+		Cell result = null;
+
+		foreach (var cell in cells)
+		{
+			if (cell.gameObject.transform.position.x == x && cell.gameObject.transform.position.z == z)
+			{
+				result = cell;
+				break;
+			}
+		}
+
+		return result;
+	}
+	bool CellExists(int x, int z)
+	{
+		bool exists = false;
+
+		foreach (var cell in cells)
+		{
+			if (cell.gameObject.transform.position.x == x && cell.gameObject.transform.position.z == z)
+			{
+				exists = true;
+				break;
+			}
+		}
+
+		return exists;
+
+	}
+	public Vector3 GetArrayValueFromTransform(Transform transform)
+    {
+		var position = new Vector3(0, 0, 0);
+		if(CellExists((int)transform.position.x, (int)transform.position.z))
+        {
+			var cell = CellAt((int)transform.position.x, (int)transform.position.z);
+			position.x = cell.x;
+			position.y = 0;
+			position.z = cell.z;
+        }
+
+		return position;
+    }
+
 }
