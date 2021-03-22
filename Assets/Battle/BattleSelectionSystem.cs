@@ -95,8 +95,8 @@ public class BattleSelectionSystem : MonoBehaviour
                     {
                         if (cell.x == x && cell.z == z)
                         {
-                            cell.Material.SetColor("_Color", new Color(0, 0, 1, 0.1f));
-                            cell.Material.SetFloat("_Alpha", 0.125f);
+                            cell.Material.SetColor("_Color", Color.blue);
+                            cell.Material.SetFloat("_Alpha", 0.500f);
 
 
                         }

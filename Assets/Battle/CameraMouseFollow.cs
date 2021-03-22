@@ -53,27 +53,23 @@ public class CameraMouseFollow : MonoBehaviour
             yTranslate = -speed * Time.deltaTime;
         }
 
-        transform.Translate(xTranslate, yTranslate, 0.0f); 
+        transform.Translate(xTranslate, yTranslate, 0.0f);
 
-        if (transform.position.y > 170)
+        var mapCenter = new Vector3(0, 125, -5);
+
+        if (Vector3.Distance(mapCenter, transform.position) > 125)
         {
-            transform.Translate(0.0f, -yTranslate, 0.0f); 
+            transform.Translate(-xTranslate, -yTranslate, 0.0f);
         }
-        
-        if (transform.position.y < 10)
+
+        print((mapCenter - transform.position).normalized);
+        print(transform.position.normalized.magnitude);
+
+
+        /*if (transform.position.y > 170 || transform.position.y < 10 || transform.position.x > 170 || transform.position.x < -60)
         {
-            transform.Translate(0.0f, -yTranslate, 0.0f); 
-        }
-        
-        if (transform.position.x > 170)
-        {
-            transform.Translate(-xTranslate, 0.0f, 0.0f); 
-        }
-        
-        if (transform.position.x < -60)
-        {
-            transform.Translate(-xTranslate, 0.0f, 0.0f); 
-        }
+            
+        }*/
 
 
         if (Input.GetAxis("Mouse ScrollWheel") > 0f) // forward
