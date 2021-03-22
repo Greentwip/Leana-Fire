@@ -33,23 +33,38 @@ public class CameraMouseFollow : MonoBehaviour
     if (Input.mousePosition.x <= 1 || Input.mousePosition.y <= 1 || Input.mousePosition.x >= Screen.width - 1 || Input.mousePosition.y >= Screen.height - 1) return;
 #endif
 
+        float xTranslate = 0.0f;
+        float yTranslate = 0.0f;
 
         if (Input.mousePosition.x > theScreenWidth - Boundary)
         {
-            transform.Translate(speed * Time.deltaTime, 0.0f, 0.0f); // move on +X axis
+            xTranslate = speed * Time.deltaTime;
         }
         if (Input.mousePosition.x < 0 + Boundary)
         {
-            transform.Translate(-speed * Time.deltaTime, 0.0f, 0.0f); // move on +X axis
+            xTranslate = -speed * Time.deltaTime;
         }
         if (Input.mousePosition.y > theScreenHeight - Boundary)
         {
-            transform.Translate(0.0f, speed * Time.deltaTime, 0.0f); // move on +Y axis
+            yTranslate = -speed * Time.deltaTime;
         }
         if (Input.mousePosition.y < 0 + Boundary)
         {
-            transform.Translate(0.0f, -speed * Time.deltaTime, 0.0f); // move on +Y axis
+            yTranslate = -speed * Time.deltaTime;
         }
+
+        transform.Translate(xTranslate, yTranslate, 0.0f); // move on -Y axis
+
+        if (transform.position.y > 180)
+        {
+            transform.Translate(0.0f, -yTranslate, 0.0f); // move on -Y axis
+            //transform.SetPositionAndRotation(new Vector3(transform.position.x, 180, transform.position.z), Quaternion.Euler(45, 45, 0));
+        } else if (transform.position.y < 20)
+        {
+            transform.Translate(0.0f, -yTranslate, 0.0f); // move on -Y axis
+            //transform.SetPositionAndRotation(new Vector3(transform.position.x, 20, transform.position.z), Quaternion.Euler(45, 45, 0));
+        }
+
 
         if (Input.GetAxis("Mouse ScrollWheel") > 0f) // forward
         {
@@ -67,5 +82,7 @@ public class CameraMouseFollow : MonoBehaviour
                 GetComponent<Camera>().orthographicSize = 50;
             }
         }
+
+
     }
 }
