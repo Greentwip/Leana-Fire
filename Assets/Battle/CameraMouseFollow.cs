@@ -46,23 +46,33 @@ public class CameraMouseFollow : MonoBehaviour
         }
         if (Input.mousePosition.y > theScreenHeight - Boundary)
         {
-            yTranslate = -speed * Time.deltaTime;
+            yTranslate = speed * Time.deltaTime;
         }
         if (Input.mousePosition.y < 0 + Boundary)
         {
             yTranslate = -speed * Time.deltaTime;
         }
 
-        transform.Translate(xTranslate, yTranslate, 0.0f); // move on -Y axis
+        transform.Translate(xTranslate, yTranslate, 0.0f); 
 
-        if (transform.position.y > 180)
+        if (transform.position.y > 170)
         {
-            transform.Translate(0.0f, -yTranslate, 0.0f); // move on -Y axis
-            //transform.SetPositionAndRotation(new Vector3(transform.position.x, 180, transform.position.z), Quaternion.Euler(45, 45, 0));
-        } else if (transform.position.y < 20)
+            transform.Translate(0.0f, -yTranslate, 0.0f); 
+        }
+        
+        if (transform.position.y < 10)
         {
-            transform.Translate(0.0f, -yTranslate, 0.0f); // move on -Y axis
-            //transform.SetPositionAndRotation(new Vector3(transform.position.x, 20, transform.position.z), Quaternion.Euler(45, 45, 0));
+            transform.Translate(0.0f, -yTranslate, 0.0f); 
+        }
+        
+        if (transform.position.x > 170)
+        {
+            transform.Translate(-xTranslate, 0.0f, 0.0f); 
+        }
+        
+        if (transform.position.x < -60)
+        {
+            transform.Translate(-xTranslate, 0.0f, 0.0f); 
         }
 
 
